@@ -6,6 +6,17 @@
  
  ![](result.gif)
 
+## Don't forget to install the requirements.txt
+1 Go to yolov5 folder
+~~~
+cd yolov5-DeepSORT-2024/yolov5
+~~~
+
+2 Install requirements.txt
+~~~
+pip install -r requirements.txt
+~~~
+
 On this project i'm just updating some line to make this project works again, because when I try it without any configuration it's not working because it's using old numpy datatype if i'm not wrong.
 
 Sorry if I make any mistake 🙏🙏🙏.
