@@ -51,7 +51,6 @@ from utils.torch_utils import select_device, time_sync
 from deep_sort_pytorch.utils.parser import get_config
 from deep_sort_pytorch.deep_sort import DeepSort
 from graphs import bbox_rel,draw_boxes
-from itertools import zip_longest
 
 @torch.no_grad()
 def run(
