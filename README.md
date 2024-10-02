@@ -6,7 +6,7 @@
  
  ![](result.gif)
 
-## Don't forget to install the requirements.txt
+## Don't forget to install the requirements.txt after you clone this repository
 1 Go to yolov5 folder
 ~~~
 cd yolov5-DeepSORT-2024/yolov5
@@ -20,10 +20,10 @@ pip install -r requirements.txt
 3 run the yolov5 DeepSORT
 ~~~
 # for webcam
-python detect_track.py -source 0
+python detect_track.py --source 0
 
 # for video
-python detect_track.py -source video_path
+python detect_track.py --source video_path
 ~~~
 
 On this project i'm just updating some line to make this project works again, because when I try it without any configuration it's not working because it's using old numpy datatype if i'm not wrong.
