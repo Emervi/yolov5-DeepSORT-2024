@@ -51,6 +51,7 @@ from utils.torch_utils import select_device, time_sync
 from deep_sort_pytorch.utils.parser import get_config
 from deep_sort_pytorch.deep_sort import DeepSort
 from graphs import bbox_rel,draw_boxes
+from itertools import zip_longest
 
 @torch.no_grad()
 def run(
@@ -113,8 +114,6 @@ def run(
     model = DetectMultiBackend(weights, device=device, dnn=dnn, data=data, fp16=half)
     stride, names, pt = model.stride, model.names, model.pt
     imgsz = check_img_size(imgsz, s=stride)  # check image size
-
-    detected_objects = {}   # dictionary for locking objects
 
     # Dataloader
     if webcam:
@@ -200,7 +199,6 @@ def run(
                 
                 #yolo write detection result 
                 # Write results
-                # for idx, (*xyxy, conf, cls) in enumerate(reversed(det)):
                 for *xyxy, conf, cls in reversed(det):
                     
                     # add bounding box height, so yolov5 label can be clearly seen
@@ -216,7 +214,7 @@ def run(
 
                     if save_img or save_crop or view_img:  # Add bbox to image
                         c = int(cls)  # integer class
-                        label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')   # label to show on the output
+                        label = None if hide_labels else (names[c] if hide_conf else f' {names[c]} {conf:.2f}')   # label to show the output
                         annotator.box_label(xyxy, label, color=colors(c, True))   # bbox making process
                     if save_crop:
                         save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
@@ -232,37 +230,6 @@ def run(
                     # draw_boxes need im0(original image), bounding box(in array shape) and identities(in array shape)
                     draw_boxes(im0, bbox_xyxy, identities)   #call function to draw seperate object identity
                     
-                    # # OBJECT LOCKING CONCEPT (failed)
-                    # # check if the id is inside the dictionary
-                    # if track_id in detected_objects:
-                    # 
-                    #     # s += f" |A|OBJEK SUDAH ADA|A| "
-                    # 
-                    #     if detected_objects[track_id]['stable_frames'] > 11:
-                    #         # s += f" |Z|YAY BERHASIL|Z| "
-                    #         detected_objects[track_id]['locked'] = True
-                    #         detected_objects[track_id]['class'] = indexClass
-                    #     else:
-                    #         # s += f" |C|FRAME DITAMBAHKAN|C| "
-                    #         detected_objects[track_id]['stable_frames'] += 1
-                    # 
-                    # else:
-                    #     # s += f" |B|KAMU MEMASUKAN OBJEK BARU!|B| "
-                    #     detected_objects[track_id] = {
-                    #         'class': indexClass,
-                    #         'stable_frames': 1,
-                    #         'locked': False
-                    #     }
-                    #
-                    # if detected_objects[track_id]['locked']:
-                    #     kls = names[detected_objects[track_id]['class']]
-                    #     label = None if hide_labels else (names[indexClass] if hide_conf else f"ID: {track_id} {kls} (LOCKED)")
-                    #     # label = f"ID: {track_id} {kls} (LOCKED)"
-                    # else:
-                    #     kls = names[detected_objects[track_id]['class']]
-                    #     label = None if hide_labels else (names[indexClass] if hide_conf else f"ID: {track_id} {kls} (NOT LOCKED)")
-                    #     # label = f"ID: {track_id} {kls} (KOLED)"
-                    # # //OBJECT LOCKING CONCEPT
 
                 # Write MOT compliant results to file
                 if save_txt and len(outputs) != 0:
